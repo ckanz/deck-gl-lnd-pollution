@@ -6,6 +6,7 @@
   "dependencies": {
     "d3-request": "^1.0.5",
     "deck.gl": "^8.4.0",
+    "mt-osgridref": "^0.1.0",
     "react": "^16.3.0",
     "react-dom": "^16.3.0",
     "react-map-gl": "^5.0.0"
@@ -14,6 +15,7 @@
     "@babel/core": "^7.4.0",
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.5",
+    "csv-parse": "^4.15.4",
     "file-loader": "^6.2.0",
     "webpack": "^4.20.2",
     "webpack-cli": "^3.1.2",
