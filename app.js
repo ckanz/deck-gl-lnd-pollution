@@ -35,17 +35,14 @@ const Heatmap = ({ data }) => <DeckGL
     },
     colorRange,
     getWeight: d => Number(d.conc),
-    aggregation: 'MEAN',
-    radiusPixels: 50,
-    intensity: 1,
-    threshold: 0.03
+    aggregation: 'MEAN'
   })]}
   initialViewState={INITIAL_VIEW_STATE}
   controller
 >
   <StaticMap
     reuseMaps
-    mapStyle='mapbox://styles/mapbox/dark-v10'
+    mapStyle='mapbox://styles/cl3mo/ckpola0cf029417si6ngscmqq'
     mapboxApiAccessToken={mapboxToken}
     preventStyleDiffing
   />

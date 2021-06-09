@@ -4,7 +4,7 @@ const fs = require('fs')
 
 const data = []
 const aggregatedMap = {}
-const FLOATING_POINT = 4
+const FLOATING_POINT = 3
 
 fs.createReadStream('./data/no2.csv')
   .pipe(parse({ delimiter: ',', from: 2 }))
