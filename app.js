@@ -18,35 +18,36 @@ const INITIAL_VIEW_STATE = {
 }
 
 const colorRange = [
-  [5, 255, 8, 20],
-  [5, 217, 8, 50],
-  [154, 178, 76, 100],
-  [253, 141, 60, 150],
+  [5, 255, 8, 50],
+  [5, 217, 8, 100],
+  [154, 178, 76, 150],
+  [253, 141, 60, 175],
   [240, 59, 32, 182],
   [189, 0, 38, 200]
 ]
 
-const Heatmap = ({ data }) => <DeckGL
-  layers={[new HeatmapLayer({
-    id: 'heatmap',
-    data: data,
-    getPosition: d => {
-      return [Number(d.lon), Number(d.lat)]
-    },
-    colorRange,
-    getWeight: d => Number(d.conc),
-    aggregation: 'MEAN'
-  })]}
-  initialViewState={INITIAL_VIEW_STATE}
-  controller
->
-  <StaticMap
-    reuseMaps
-    mapStyle='mapbox://styles/cl3mo/ckpola0cf029417si6ngscmqq'
-    mapboxApiAccessToken={mapboxToken}
-    preventStyleDiffing
-  />
-</DeckGL>
+const Heatmap = ({ data }) =>
+  <DeckGL
+    layers={[new HeatmapLayer({
+      id: 'heatmap',
+      data: data,
+      getPosition: d => {
+        return [Number(d.lon), Number(d.lat)]
+      },
+      colorRange,
+      getWeight: d => Number(d.conc),
+      aggregation: 'MEAN'
+    })]}
+    initialViewState={INITIAL_VIEW_STATE}
+    controller
+  >
+    <StaticMap
+      reuseMaps
+      mapStyle='mapbox://styles/cl3mo/ckpola0cf029417si6ngscmqq'
+      mapboxApiAccessToken={mapboxToken}
+      preventStyleDiffing
+    />
+  </DeckGL>
 
 export const renderToDOM = container => {
   csv(csvFile, (error, data) => {
@@ -55,5 +56,10 @@ export const renderToDOM = container => {
       return
     }
     render(<Heatmap data={data} />, container)
+  }).on('progress', event => {
+    if (event.lengthComputable) {
+      const percentComplete = Math.round(event.loaded * 100 / event.total)
+      console.log(percentComplete)
+    }
   })
 }
