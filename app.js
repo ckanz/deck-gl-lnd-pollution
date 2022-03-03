@@ -7,6 +7,24 @@ import { csv } from 'd3-request'
 import { mapboxToken } from './creds.js'
 import csvFile from './data/array.csv'
 
+// import 'semantic-ui-css/semantic.min.css' // TODO: which css-loader version to use of webpack4?
+import { Input, Menu } from 'semantic-ui-react'
+
+const MenuExampleInputs = () => (
+  <Menu vertical>
+    <Menu.Item>
+      <Input className='icon' icon='search' placeholder='Search...' />
+    </Menu.Item>
+
+    <Menu.Item position='right'>
+      <Input
+        action={{ type: 'submit', content: 'Go' }}
+        placeholder='Navigate to...'
+      />
+    </Menu.Item>
+  </Menu>
+)
+
 const INITIAL_VIEW_STATE = {
   longitude: -0.1,
   latitude: 51.5,
@@ -123,7 +141,13 @@ export const renderToDOM = container => {
       return
     }
     console.log(data)
-    render(<Heatmap data={data} />, container)
+    render(
+      <div>
+        <div style={{ position: 'relative' }}><Heatmap data={data} /></div>
+        <MenuExampleInputs />
+      </div>,
+      container
+    )
   }).on('progress', event => {
     if (event.lengthComputable) {
       const percentComplete = Math.round(event.loaded * 100 / event.total)

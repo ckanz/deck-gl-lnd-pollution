@@ -9,7 +9,9 @@
     "mt-osgridref": "^0.1.0",
     "react": "^16.3.0",
     "react-dom": "^16.3.0",
-    "react-map-gl": "^5.0.0"
+    "react-map-gl": "^5.0.0",
+    "semantic-ui-css": "^2.4.1",
+    "semantic-ui-react": "^2.1.2"
   },
   "devDependencies": {
     "@babel/core": "^7.4.0",
