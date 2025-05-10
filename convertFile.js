@@ -3,9 +3,11 @@ const parse = require('csv-parse')
 const fs = require('fs')
 
 const aggregatedMap = new Map()
-const GRID_PREC = 2
-const LATLON_PREC = 5
+const GRID_PRECISION = 2
+const LATLON_PRECISION = 5
 const OFFSET = 0.001
+
+// TODO: add step that downloads files
 
 const fileName = process.argv[2]
 
@@ -13,14 +15,14 @@ fs.createReadStream(`./${fileName}`)
   .on('error', console.error)
   .pipe(parse({ delimiter: ',', from: 2 }))
   .on('data', row => {
-    row[0] = row[0].slice(0, -GRID_PREC) + '00'
-    row[1] = row[1].slice(0, -GRID_PREC) + '00'
+    row[0] = row[0].slice(0, -GRID_PRECISION) + '00'
+    row[1] = row[1].slice(0, -GRID_PRECISION) + '00'
     const parsedRow = row.map(Number)
     const point = new OsGridRef(...parsedRow)
     const { _lat, _lon } = OsGridRef.osGridToLatLong(point)
 
-    const roundedLat = (_lat + OFFSET).toFixed(LATLON_PREC)
-    const roundedLon = (_lon - OFFSET).toFixed(LATLON_PREC)
+    const roundedLat = (_lat + OFFSET).toFixed(LATLON_PRECISION)
+    const roundedLon = (_lon - OFFSET).toFixed(LATLON_PRECISION)
     const posKey = `${roundedLat},${roundedLon}`
     if (!aggregatedMap.has(posKey)) {
       aggregatedMap.set(posKey, [])

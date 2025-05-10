@@ -4,23 +4,26 @@ import { render } from 'react-dom'
 import { StaticMap } from 'react-map-gl'
 import { HeatmapLayer, ScreenGridLayer } from '@deck.gl/aggregation-layers'
 import { csv } from 'd3-request'
+import { scaleLinear } from 'd3-scale'
 import { mapboxToken } from './creds.js'
-import csvFile from './data/array.csv'
+
+// TODO: load all pollutants
+import csvFile from './array-2.csv'
 
 // import 'semantic-ui-css/semantic.min.css' // TODO: which css-loader version to use of webpack4?
-import { Input, Menu, Checkbox } from 'semantic-ui-react'
+import { Menu, Checkbox, Dropdown } from 'semantic-ui-react'
 
 const INITIAL_VIEW_STATE = {
   longitude: -0.1,
   latitude: 51.5,
-  zoom: 11,
-  minZoom: 7,
-  maxZoom: 14.5,
+  zoom: 13,
+  minZoom: 9,
+  maxZoom: 13,
   pitch: 0,
   bearing: 0
 }
 
-const colorRange = [
+const defaultColorRange = [
   [5, 255, 8, 50],
   [5, 217, 8, 100],
   [154, 178, 76, 150],
@@ -29,7 +32,7 @@ const colorRange = [
   [189, 0, 38, 200]
 ]
 
-const colorRangeNoOpac = [
+const colorRangeForFullOpacity = [
   [5, 255, 8, 0],
   [5, 217, 8, 0],
   [154, 178, 76, 0],
@@ -38,35 +41,53 @@ const colorRangeNoOpac = [
   [189, 0, 38]
 ]
 
-const getLatLonArray = d => [Number(d.lon) - 0.002, Number(d.lat) + 0.001]
+const gridOpacityScale = scaleLinear().domain([10, 12]).range([1, 0]).clamp(true);
+const heatmapOpacityScale = scaleLinear().domain([10, 12]).range([0, 1]).clamp(true);
 
-const Heatmap = ({ data }) => {
-  const [pointSize, setPointSize] = useState(50)
-  const [gridOpacity, setGridOpacity] = useState(1)
-  const [heatmapOpacity, setHeatmapOpacity] = useState(0.3)
-  const [colorScheme, setColorScheme] = useState(colorRange)
+const getPosition = d => [Number(d.lon) - 0.002, Number(d.lat) + 0.001]
+const getWeight = d => Number(d.conc)
 
-const MenuExampleInputs = () => (
-  <Menu vertical style={{ position: 'absolute', width: '100%', margin: 0 }}>
+// TODO: add dropdown menu for aggregation methods
+// TODO: add dropdown menu for different pollutants
+const MenuExampleInputs = ({toggleOpacity, colorScheme}) => (
+  <Menu style={{ position: 'absolute', width: '100%', margin: 0 }}>
     <Menu.Item>
-      <Checkbox toggle label='show low emissions as transparent' onClick={toggleOpacity} checked={colorScheme == colorRangeNoOpac} />
+      <Checkbox toggle label='show low emissions as transparent' onClick={toggleOpacity} checked={colorScheme == colorRangeForFullOpacity} />
     </Menu.Item>
+    {/* <Menu.Item>
+      <Menu.Header>Aggregation Method</Menu.Header>
+      <Dropdown value="MEAN" onChange={(a,b,c) => { console.log(a,b,c)}}>
+        <Dropdown.Menu value={'MEAN'} onChange={(a,b,c) => { console.log(a,b,c)}}>
+          <Dropdown.Item value="MIN" key="MIN">
+            MIN
+          </Dropdown.Item>
+          <Dropdown.Item value="MEAN" key="MEAN">
+            MEAN
+          </Dropdown.Item>
+          <Dropdown.Item value="MAX" key="MAX">
+            SUM
+          </Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
+    </Menu.Item> */}
   </Menu>
 )
 
+const Heatmap = ({ data }) => {
+  const [gridOpacity, setGridOpacity] = useState(gridOpacityScale(INITIAL_VIEW_STATE.zoom))
+  const [heatmapOpacity, setHeatmapOpacity] = useState(heatmapOpacityScale(INITIAL_VIEW_STATE.zoom))
+  const [colorRange, setColorRange] = useState(defaultColorRange)
 
-  const screengridLayer = new ScreenGridLayer({
+  const screenGridLayer = new ScreenGridLayer({
     id: 'screen-grid-layer',
     data,
     pickable: false,
     cellSizePixels: 10,
     cellMarginPixels: 30,
     opacity: gridOpacity,
-    // opacity: 0.5,
-    colorRange: colorScheme,
-    // colorRange: colorRange,
-    getPosition: d => getLatLonArray(d),
-    getWeight: d => Number(d.conc),
+    colorRange,
+    getPosition,
+    getWeight,
     aggregation: 'MEAN'
   })
 
@@ -74,25 +95,23 @@ const MenuExampleInputs = () => (
     id: 'heatmap',
     data: data,
     opacity: heatmapOpacity,
-    // opacity: 0.5,
-    getPosition: d => getLatLonArray(d),
-    radiusPixels: pointSize,
-    colorRange: colorScheme,
-    // colorRange: colorRange,
-    getWeight: d => Number(d.conc),
+    getPosition,
+    radiusPixels: 50,
+    colorRange,
+    getWeight,
     aggregation: 'MEAN'
   })
 
   const layers = [
-    screengridLayer,
+    screenGridLayer,
     heatmapLayer
   ]
 
   const toggleOpacity = (_, { checked }) => {
     if (checked === true) {
-      setColorScheme(colorRangeNoOpac)
+      setColorRange(colorRangeForFullOpacity)
     } else {
-      setColorScheme(colorRange)
+      setColorRange(defaultColorRange)
     }
   }
 
@@ -102,31 +121,8 @@ const MenuExampleInputs = () => (
         layers={layers}
         initialViewState={INITIAL_VIEW_STATE}
         onViewStateChange={({ viewState }) => {
-          if (viewState.zoom <= 12) {
-            setGridOpacity(0.5)
-            setHeatmapOpacity(0.25)
-          } else {
-            setGridOpacity(0)
-            setHeatmapOpacity(1)
-          }
-
-          let newPointSize = 50
-          if (viewState.zoom > 14.5) {
-            newPointSize = 150
-          }
-          if (viewState.zoom <= 14.5) {
-            newPointSize = (100)
-          }
-          if (viewState.zoom <= 14) {
-            newPointSize = (75)
-          }
-          if (viewState.zoom <= 13) {
-            newPointSize = (50)
-          }
-          if (viewState.zoom <= 11) {
-            newPointSize = (25)
-          }
-          if (pointSize !== newPointSize) setPointSize(newPointSize)
+          setGridOpacity(gridOpacityScale(viewState.zoom));
+          setHeatmapOpacity(heatmapOpacityScale(viewState.zoom));
         }}
         controller
       >
@@ -137,7 +133,10 @@ const MenuExampleInputs = () => (
           preventStyleDiffing
         />
       </DeckGL>
-      <MenuExampleInputs />
+      <MenuExampleInputs
+        toggleOpacity={toggleOpacity}
+        colorScheme={colorRange}
+      />
     </div>
   )
 }
