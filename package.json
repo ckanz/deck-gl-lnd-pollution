@@ -5,6 +5,7 @@
   },
   "dependencies": {
     "d3-request": "^1.0.5",
+    "d3-scale": "^4.0.2",
     "deck.gl": "^8.4.0",
     "mt-osgridref": "^0.1.0",
     "react": "^16.3.0",

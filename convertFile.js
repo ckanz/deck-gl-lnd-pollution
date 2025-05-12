@@ -7,7 +7,7 @@ const GRID_PRECISION = 2
 const LATLON_PRECISION = 5
 const OFFSET = 0.001
 
-// TODO: add step that downloads files
+// TODO: add step that downloads files and unzips them
 
 const fileName = process.argv[2]
 
@@ -37,8 +37,7 @@ fs.createReadStream(`./${fileName}`)
     })
     aggDataArray.unshift('lat,lon,conc\n')
 
-    // const outFile = fs.createWriteStream(`${fileName.slice(0, -4)}-converted.csv`)
-    const outFile = fs.createWriteStream('array-2.csv')
+    const outFile = fs.createWriteStream(`${fileName.slice(0, -4)}-converted.csv`)
       .on('error', console.error)
     aggDataArray.forEach(row => outFile.write(row))
     console.log('file written')
