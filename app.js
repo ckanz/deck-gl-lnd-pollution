@@ -11,14 +11,12 @@ import { Heatmap } from "./Heatmap.js";
 
 const aggregationMethods = [
   { key: "mean", text: "Mean", value: "MEAN" },
-  // { key: "sum", text: "Sum", value: "SUM" },
   { key: "min", text: "Min", value: "MIN" },
   { key: "max", text: "Max", value: "MAX" },
 ];
 
 const pollutants = [{ key: "no2", text: "NO2", value: "NO2" }];
 
-// TODO: add dropdown menu for aggregation methods
 // TODO: add dropdown menu for different pollutants
 const TopBarMenu = ({ opacityOn, setOpacityOn, setAggregation }) => (
   <Menu style={{ position: "absolute", width: "100%", margin: 0 }}>
@@ -35,7 +33,7 @@ const TopBarMenu = ({ opacityOn, setOpacityOn, setAggregation }) => (
     <Menu.Item>
       <span style={{ marginRight: "10px" }}>Aggregation Method:</span>
       <Dropdown
-        placeholder="Mean"
+        value="MEAN"
         selection
         options={aggregationMethods}
         onChange={(_, { value }) => {
@@ -45,11 +43,16 @@ const TopBarMenu = ({ opacityOn, setOpacityOn, setAggregation }) => (
     </Menu.Item>
     <Menu.Item>
       <span style={{ marginRight: "10px" }}>Pollutant:</span>
-      <Dropdown placeholder="NO2" selection options={pollutants} />
+      <Dropdown value="NO2" selection options={pollutants} />
     </Menu.Item>
-    <Menu.Item>
-      <span>Find the project on GitHub here.</span>
-    </Menu.Item>
+    <Menu.Menu position="right">
+      <Menu.Item>
+        <span>
+          Find the project on GitHub{" "}
+          <a href="https://github.com/ckanz/deck-gl-lnd-pollution">here</a>.
+        </span>
+      </Menu.Item>
+    </Menu.Menu>
   </Menu>
 );
 

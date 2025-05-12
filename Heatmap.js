@@ -17,21 +17,21 @@ export const Heatmap = ({ data, aggregation, opacityOn, dataLoadingProgress }) =
   };
 
   const defaultColorRange = [
-    [5, 255, 8, 50],
-    [5, 217, 8, 100],
-    [154, 178, 76, 150],
+    [5, 255, 8, 175],
+    [5, 217, 8, 175],
+    [154, 178, 76, 175],
     [253, 141, 60, 175],
-    [240, 59, 32, 182],
-    [189, 0, 38, 200],
+    [240, 59, 32, 175],
+    [189, 0, 38, 175],
   ];
 
   const colorRangeForFullOpacity = [
-    [5, 255, 8, 0],
-    [5, 217, 8, 0],
-    [154, 178, 76, 0],
-    [253, 141, 60],
-    [240, 59, 32],
-    [189, 0, 38],
+    [5, 255, 8, 50],
+    [5, 217, 8, 50],
+    [154, 178, 76, 50],
+    [253, 141, 60, 175],
+    [240, 59, 32, 175],
+    [189, 0, 38, 175],
   ];
 
   const gridOpacityScale = scaleLinear()
@@ -52,7 +52,7 @@ export const Heatmap = ({ data, aggregation, opacityOn, dataLoadingProgress }) =
 
   const colorRange = opacityOn ? colorRangeForFullOpacity : defaultColorRange;
 
-  const getPosition = (d) => [Number(d.lon) - 0.002, Number(d.lat) + 0.001];
+  const getPosition = (d) => [Number(d.lon) - 0.00, Number(d.lat) + 0.00];
   const getWeight = (d) => Number(d.conc);
 
   const screenGridLayer = new ScreenGridLayer({
@@ -76,7 +76,6 @@ export const Heatmap = ({ data, aggregation, opacityOn, dataLoadingProgress }) =
     radiusPixels: 50,
     colorRange,
     getWeight,
-    // TODO: MIN & SUM show no difference?
     aggregation,
   });
 
@@ -93,7 +92,7 @@ export const Heatmap = ({ data, aggregation, opacityOn, dataLoadingProgress }) =
           opacity: isDataReady ? 0 : 1,
         }}
       >
-        loading...
+        loading... {dataLoadingProgress}%
       </div>
       <div style={{ opacity: isDataReady ? 1 : 0 }}>
         <DeckGL
@@ -107,7 +106,7 @@ export const Heatmap = ({ data, aggregation, opacityOn, dataLoadingProgress }) =
         >
           <StaticMap
             reuseMaps
-            // mapStyle="mapbox://styles/cl3mo/ckpola0cf029417si6ngscmqq"
+            mapStyle="mapbox://styles/mapbox/outdoors-v12"
             mapboxApiAccessToken={mapboxToken}
             preventStyleDiffing />
         </DeckGL>
