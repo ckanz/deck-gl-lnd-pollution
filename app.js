@@ -3,7 +3,7 @@ import { render } from "react-dom";
 import { csv } from "d3-request";
 
 // TODO: load all pollutants
-import csvFile from "./array-2.csv";
+import csvFile from "./data/LAEI2016_2016_NO2-converted.csv";
 
 // import 'semantic-ui-css/semantic.min.css' // TODO: which css-loader version to use of webpack4?
 import { Menu, Checkbox, Dropdown } from "semantic-ui-react";
