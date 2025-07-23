@@ -1,72 +1,100 @@
-import React from 'react'
-import DeckGL from '@deck.gl/react'
-import { render } from 'react-dom'
-import { StaticMap } from 'react-map-gl'
-import { HexagonLayer } from '@deck.gl/aggregation-layers'
-import { AmbientLight, PointLight, LightingEffect } from '@deck.gl/core'
-import { csv } from 'd3-request'
-import { mapboxToken } from './creds.js'
-import csvFile from './data/nyc-complaint-data.csv'
+import React, { useEffect, useState } from "react";
+import { render } from "react-dom";
+import { csv } from "d3-request";
 
-const INITIAL_VIEW_STATE = {
-  longitude: -74.0,
-  latitude: 40.68,
-  zoom: 10.5,
-  minZoom: 5,
-  maxZoom: 15,
-  pitch: 50,
-  bearing: 0
-}
+// TODO: load all pollutants
+import csvFile from "./data/LAEI2016_2016_NO2-converted.csv";
 
-const lightingEffect = new LightingEffect({
-  ambientLight: new AmbientLight(),
-  pointLight1: new PointLight()
-})
+// import 'semantic-ui-css/semantic.min.css' // TODO: which css-loader version to use of webpack4?
+import { Menu, Checkbox, Dropdown } from "semantic-ui-react";
+import { Heatmap } from "./Heatmap.js";
 
-const material = {
-  ambient: 0.64,
-  diffuse: 0.6,
-  shininess: 32,
-  specularColor: [51, 51, 51]
-}
+const aggregationMethods = [
+  { key: "mean", text: "Mean", value: "MEAN" },
+  { key: "min", text: "Min", value: "MIN" },
+  { key: "max", text: "Max", value: "MAX" },
+];
 
-const colorRange = [
-  [200, 200, 200],
-  [200, 150, 150],
-  [200, 100, 100],
-  [200, 50, 50],
-  [200, 0, 0]
-]
+const pollutants = [{ key: "no2", text: "NO2", value: "NO2" }];
 
-export const renderToDOM = container => {
-  csv(csvFile, (error, data) => {
-    if (error) {
-      console.error(error)
-      return
-    }
-    render(
-      <DeckGL
-        layers={[new HexagonLayer({
-          id: 'heatmap',
-          colorDomain: [0, 1600],
-          elevationScale: 50,
-          extruded: true,
-          getPosition: d => [Number(d.lng), Number(d.lat)],
-          radius: 25,
-          data,
-          colorRange,
-          material
-        })]}
-        effects={[lightingEffect]}
-        initialViewState={INITIAL_VIEW_STATE}
-        controller
-      >
-        <StaticMap
-          reuseMaps
-          mapStyle='mapbox://styles/mapbox/dark-v10'
-          mapboxApiAccessToken={mapboxToken}
-          preventStyleDiffing
-        />
-      </DeckGL>, container)
-  })
-}
+// TODO: add dropdown menu for different pollutants
+const TopBarMenu = ({ opacityOn, setOpacityOn, setAggregation }) => (
+  <Menu style={{ position: "absolute", width: "100%", margin: 0 }}>
+    <Menu.Item>
+      <Checkbox
+        toggle
+        label="show low emissions as transparent"
+        onClick={() => {
+          setOpacityOn(!opacityOn);
+        }}
+        checked={opacityOn}
+      />
+    </Menu.Item>
+    <Menu.Item>
+      <span style={{ marginRight: "10px" }}>Aggregation Method:</span>
+      <Dropdown
+        value="MEAN"
+        selection
+        options={aggregationMethods}
+        onChange={(_, { value }) => {
+          setAggregation(value);
+        }}
+      />
+    </Menu.Item>
+    <Menu.Item>
+      <span style={{ marginRight: "10px" }}>Pollutant:</span>
+      <Dropdown value="NO2" selection options={pollutants} />
+    </Menu.Item>
+    <Menu.Menu position="right">
+      <Menu.Item>
+        <span>
+          Find the project on GitHub{" "}
+          <a href="https://github.com/ckanz/deck-gl-lnd-pollution">here</a>.
+        </span>
+      </Menu.Item>
+    </Menu.Menu>
+  </Menu>
+);
+
+const App = () => {
+  const [data, setData] = useState([]);
+  const [dataLoadingProgress, setDataLoadingProgress] = useState(0);
+  const [opacityOn, setOpacityOn] = useState(false);
+  const [aggregation, setAggregation] = useState("MEAN");
+
+  useEffect(() => {
+    csv(csvFile, (error, data) => {
+      if (error) {
+        console.error(error);
+        return;
+      }
+      setData(data);
+    }).on("progress", (event) => {
+      if (event.lengthComputable) {
+        const percentComplete = Math.round((event.loaded * 100) / event.total);
+        console.log(percentComplete);
+        setDataLoadingProgress(percentComplete);
+      }
+    });
+  }, []);
+
+  return (
+    <>
+      <Heatmap
+        data={data}
+        dataLoadingProgress={dataLoadingProgress}
+        aggregation={aggregation}
+        opacityOn={opacityOn}
+      />
+      <TopBarMenu
+        opacityOn={opacityOn}
+        setOpacityOn={setOpacityOn}
+        setAggregation={setAggregation}
+      />
+    </>
+  );
+};
+
+export const renderToDOM = (container) => {
+  render(<App />, container);
+};

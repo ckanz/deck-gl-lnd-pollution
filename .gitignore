@@ -1,4 +1,5 @@
 creds.js
+/data/
 /node_modules/
 /dist/
 bundle.js
