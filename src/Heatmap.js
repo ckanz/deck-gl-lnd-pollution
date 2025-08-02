@@ -21,21 +21,21 @@ export const Heatmap = ({
   };
 
   const defaultColorRange = [
-    [5, 255, 8, 175],
-    [5, 217, 8, 175],
-    [154, 178, 76, 175],
-    [253, 141, 60, 175],
-    [240, 59, 32, 175],
-    [189, 0, 38, 175],
+    [5, 255, 8, 125],
+    [5, 217, 8, 125],
+    [154, 178, 76, 125],
+    [253, 141, 60, 125],
+    [240, 59, 32, 125],
+    [189, 0, 38, 125],
   ];
 
   const colorRangeForFullOpacity = [
     [5, 255, 8, 50],
     [5, 217, 8, 50],
     [154, 178, 76, 50],
-    [253, 141, 60, 175],
-    [240, 59, 32, 175],
-    [189, 0, 38, 175],
+    [253, 141, 60, 150],
+    [240, 59, 32, 150],
+    [189, 0, 38, 150],
   ];
 
   const [layers, setLayers] = React.useState([]);
@@ -91,7 +91,7 @@ export const Heatmap = ({
         >
           <StaticMap
             reuseMaps
-            mapStyle="mapbox://styles/mapbox/outdoors-v12"
+            mapStyle="mapbox://styles/mapbox/dark-v11"
             mapboxApiAccessToken={mapboxToken}
             preventStyleDiffing
           />
