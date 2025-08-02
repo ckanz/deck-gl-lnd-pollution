@@ -52,3 +52,5 @@ npm start
 ```
 
 The application will open at `http://localhost:3030`
+
+![img](https://github.com/ckanz/deck-gl-lnd-pollution/blob/master/Screenshot.png?raw=true)
