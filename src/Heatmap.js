@@ -1,19 +1,23 @@
-import { ScreenGridLayer, HeatmapLayer } from "@deck.gl/aggregation-layers";
+import { HeatmapLayer } from "@deck.gl/aggregation-layers";
 import DeckGL from "@deck.gl/react";
-import { scaleLinear } from "d3-scale";
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { default as StaticMap } from "react-map-gl";
+import { Progress } from "semantic-ui-react";
 import { mapboxToken } from "./creds";
 
-export const Heatmap = ({ data, aggregation, opacityOn, dataLoadingProgress }) => {
+export const Heatmap = ({
+  data,
+  aggregation,
+  opacityOn,
+  dataLoadingProgress,
+  bytesLoaded,
+}) => {
   const INITIAL_VIEW_STATE = {
     longitude: -0.1,
     latitude: 51.5,
     zoom: 13,
     minZoom: 9,
     maxZoom: 13,
-    pitch: 0,
-    bearing: 0,
   };
 
   const defaultColorRange = [
@@ -34,83 +38,65 @@ export const Heatmap = ({ data, aggregation, opacityOn, dataLoadingProgress }) =
     [189, 0, 38, 175],
   ];
 
-  const gridOpacityScale = scaleLinear()
-    .domain([10, 12])
-    .range([1, 0])
-    .clamp(true);
-  const heatmapOpacityScale = scaleLinear()
-    .domain([10, 12])
-    .range([0, 1])
-    .clamp(true);
-
-  const [gridOpacity, setGridOpacity] = useState(
-    gridOpacityScale(INITIAL_VIEW_STATE.zoom)
-  );
-  const [heatmapOpacity, setHeatmapOpacity] = useState(
-    heatmapOpacityScale(INITIAL_VIEW_STATE.zoom)
-  );
+  const [layers, setLayers] = React.useState([]);
 
   const colorRange = opacityOn ? colorRangeForFullOpacity : defaultColorRange;
 
-  const getPosition = (d) => [Number(d.lon) - 0.00, Number(d.lat) + 0.00];
+  const getPosition = (d) => [Number(d.lon) - 0.0, Number(d.lat) + 0.0];
   const getWeight = (d) => Number(d.conc);
 
-  const screenGridLayer = new ScreenGridLayer({
-    id: "screen-grid-layer",
-    data,
-    pickable: false,
-    cellSizePixels: 10,
-    cellMarginPixels: 30,
-    opacity: gridOpacity,
-    colorRange,
-    getPosition,
-    getWeight,
-    aggregation,
-  });
+  useEffect(() => {
+    const heatmapLayer = new HeatmapLayer({
+      id: "heatmap",
+      data: data,
+      getPosition,
+      radiusPixels: 50,
+      colorRange,
+      getWeight,
+      aggregation,
+    });
+    setLayers([heatmapLayer]);
+  }, [data, aggregation, opacityOn]);
 
-  const heatmapLayer = new HeatmapLayer({
-    id: "heatmap",
-    data: data,
-    opacity: heatmapOpacity,
-    getPosition,
-    radiusPixels: 50,
-    colorRange,
-    getWeight,
-    aggregation,
-  });
-
-  const layers = [screenGridLayer, heatmapLayer];
   const isDataReady = data.length > 0;
 
   return (
     <>
-      <div
-        style={{
-          position: "fixed",
-          top: "50%",
-          left: "50%",
-          opacity: isDataReady ? 0 : 1,
-        }}
-      >
-        loading... {dataLoadingProgress}%
-      </div>
-      <div style={{ opacity: isDataReady ? 1 : 0 }}>
+      {!isDataReady && (
+        <div
+          style={{
+            position: "fixed",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: "300px",
+            opacity: isDataReady ? 0 : 1,
+          }}
+        >
+          <Progress percent={dataLoadingProgress} indicating progress />
+          Loading data...
+          <hr />
+          <span>
+            {bytesLoaded > 0 && `${(bytesLoaded / 1024).toFixed(2)} KB loaded`}
+            {dataLoadingProgress > 0 && ` (${dataLoadingProgress}%)`}
+          </span>
+          <br />
+        </div>
+      )}
+      {isDataReady && (
         <DeckGL
           layers={layers}
           initialViewState={INITIAL_VIEW_STATE}
-          onViewStateChange={({ viewState }) => {
-            setGridOpacity(gridOpacityScale(viewState.zoom));
-            setHeatmapOpacity(heatmapOpacityScale(viewState.zoom));
-          }}
           controller
         >
           <StaticMap
             reuseMaps
             mapStyle="mapbox://styles/mapbox/outdoors-v12"
             mapboxApiAccessToken={mapboxToken}
-            preventStyleDiffing />
+            preventStyleDiffing
+          />
         </DeckGL>
-      </div>
+      )}
     </>
   );
 };
