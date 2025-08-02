@@ -1,18 +1,24 @@
 {
   "scripts": {
     "start": "webpack-dev-server --progress --hot --port 3030 --open",
-    "build": "NODE_ENV=production webpack --mode=production && cp ./index.html dist/"
+    "build": "webpack --mode=production && cp ./src/index.html dist/",
+    "fetchData": "node data/fetchData.js",
+    "convertData": "node data/convertData.js"
   },
   "dependencies": {
+    "css-loader": "^7.1.2",
     "d3-request": "^1.0.5",
     "d3-scale": "^4.0.2",
     "deck.gl": "^8.4.0",
+    "https": "^1.0.0",
     "mt-osgridref": "^0.1.0",
     "react": "^16.3.0",
     "react-dom": "^16.3.0",
     "react-map-gl": "^5.0.0",
     "semantic-ui-css": "^2.4.1",
-    "semantic-ui-react": "^2.1.2"
+    "semantic-ui-react": "^2.1.2",
+    "style-loader": "^4.0.0",
+    "unzipper": "^0.12.3"
   },
   "devDependencies": {
     "@babel/core": "^7.4.0",
@@ -20,8 +26,8 @@
     "babel-loader": "^8.0.5",
     "csv-parse": "^4.15.4",
     "file-loader": "^6.2.0",
-    "webpack": "^4.20.2",
-    "webpack-cli": "^3.1.2",
-    "webpack-dev-server": "^3.1.1"
+    "webpack": "^5.76.0",
+    "webpack-cli": "^5.0.0",
+    "webpack-dev-server": "^5.2.2"
   }
 }
