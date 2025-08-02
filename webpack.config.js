@@ -1,10 +1,19 @@
+const path = require('path');
+
 module.exports = {
-  // mode: 'development',
+  mode: 'development',
   entry: {
-    app: './app.js'
+    app: './src/App.js'
   },
   output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: '[name].js',
     library: 'App'
+  },
+  devServer: {
+    static: './src',
+    port: 3030,
+    hot: true
   },
   module: {
     rules: [
@@ -19,6 +28,10 @@ module.exports = {
       {
         test: /\.csv$/,
         loader: 'file-loader'
+      },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader']
       }
     ]
   }
