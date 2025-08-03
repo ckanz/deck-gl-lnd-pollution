@@ -1,6 +1,5 @@
 creds.js
 /data/**/*.csv
 /node_modules/
-/dist/
 bundle.js
 bundle.js.map
