@@ -36,6 +36,7 @@ const App = () => {
 
   useEffect(() => {
     const loadedData = {};
+    let totalLoadedBytes = 0
     pollutants.forEach((pollutant) => {
       csv(pollutant.data, (error) => {
         if (error) {
@@ -44,21 +45,16 @@ const App = () => {
         }
       })
         .on("progress", (event) => {
-          setBytesLoaded(event.loaded);
-          if (event.lengthComputable) {
-            const percentComplete = Math.round(
-              (event.loaded * 100) / event.total
-            );
-            setDataLoadingProgress(percentComplete);
-          }
+          totalLoadedBytes += event.loaded;
+          const total = event.lengthComputable && event.total > 0 ? event.total : 15e7;
+          const percentComplete = Math.min(Math.round((totalLoadedBytes * 100) / total), 100);
+          setDataLoadingProgress(percentComplete);
+          setBytesLoaded(totalLoadedBytes);
         })
         .on("load", (data) => {
           loadedData[pollutant.value] = data;
           if (Object.keys(loadedData).length === pollutants.length) {
-            setDataLoadingProgress(100);
-            setTimeout(() => {
-              setDataMap(loadedData);
-            }, 250);
+            setDataMap(loadedData);
           }
         });
     });
