@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Menu, Checkbox, Dropdown } from "semantic-ui-react";
 
 const aggregationMethodsHeatmap = [
@@ -6,13 +6,13 @@ const aggregationMethodsHeatmap = [
     key: "mean",
     text: "Mean",
     value: "MEAN",
-    description: "The mean weight across all points that fall into a cell",
+    description: "Mean weight across all points in a cell",
   },
   {
     key: "sum",
     text: "Sum",
     value: "SUM",
-    description: "The sum of weights across all points that fall into a cell",
+    description: "Sum of weights across all points in a cell",
   },
 ];
 
@@ -21,31 +21,31 @@ const aggregationMethodsScreenGrid = [
     key: "mean",
     text: "Mean",
     value: "MEAN",
-    description: "The mean weight across all points that fall into a cell",
+    description: "Mean weight across all points in a cell",
   },
   {
     key: "sum",
     text: "Sum",
     value: "SUM",
-    description: "The sum of weights across all points that fall into a cell",
+    description: "Sum of weights across all points in a cell",
   },
   {
     key: "min",
     text: "Min",
     value: "MIN",
-    description: "The minimum weight across all points that fall into a cell",
+    description: "Minimum weight across all points in a cell",
   },
   {
     key: "max",
     text: "Max",
     value: "MAX",
-    description: "The maximum weight across all points that fall into a cell",
+    description: "Maximum weight across all points in a cell",
   },
   {
     key: "count",
     text: "Count",
     value: "COUNT",
-    description: "The number of points that fall into a cell",
+    description: "Number of points in a cell",
   },
 ];
 
@@ -93,8 +93,9 @@ export const TopBarMenu = ({
       </Menu.Item>
 
       <Menu.Item disabled={disableItems}>
-        <span style={{ marginRight: "10px" }}>Aggregation Method:</span>
+        <span style={{ marginRight: 10 }}>Aggregation Method:</span>
         <Dropdown
+          style={{ width: 350 }}
           disabled={disableItems}
           value={aggregation}
           selection
@@ -105,7 +106,7 @@ export const TopBarMenu = ({
         />
       </Menu.Item>
       <Menu.Item>
-        <span style={{ marginRight: "10px" }}>Pollutant:</span>
+        <span style={{ marginRight: 10 }}>Pollutant:</span>
         <Dropdown
           value={pollutant}
           selection
@@ -116,7 +117,7 @@ export const TopBarMenu = ({
         />
       </Menu.Item>
       <Menu.Item>
-        <span style={{ marginRight: "10px" }}>Map Type:</span>
+        <span style={{ marginRight: 10 }}>Map Type:</span>
         <Dropdown
           value={mapType}
           selection
