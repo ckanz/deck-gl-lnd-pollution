@@ -20,7 +20,6 @@ const pollutants = [
 ];
 
 const mapTypes = [
-  { key: "column", text: "Column", value: "ColumnLayer" },
   { key: "gridcell", text: "GridCell", value: "GridCellLayer" },
   { key: "screengrid", text: "ScreenGrid", value: "ScreenGridLayer" },
   { key: "heatmap", text: "Heatmap", value: "HeatmapLayer" },

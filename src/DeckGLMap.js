@@ -1,5 +1,5 @@
 import { HeatmapLayer, ScreenGridLayer } from "@deck.gl/aggregation-layers";
-import { ColumnLayer, GridCellLayer } from "@deck.gl/layers";
+import { GridCellLayer } from "@deck.gl/layers";
 import DeckGL from "@deck.gl/react";
 import React, { useEffect, useState } from "react";
 import { default as StaticMap } from "react-map-gl";
@@ -82,18 +82,6 @@ export const DeckGLMap = ({
           data: data,
           getPosition,
           cellSize: 250,
-          elevationScale: 4,
-          getFillColor,
-          getElevation,
-        });
-        break;
-
-      case "ColumnLayer":
-        layer = new ColumnLayer({
-          id: "column",
-          data: data,
-          getPosition,
-          radius: 100,
           elevationScale: 4,
           getFillColor,
           getElevation,
