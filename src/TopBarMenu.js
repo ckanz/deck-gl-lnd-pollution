@@ -6,13 +6,11 @@ const aggregationMethodsHeatmap = [
     key: "mean",
     text: "Mean",
     value: "MEAN",
-    description: "Mean weight across all points in a cell",
   },
   {
     key: "sum",
     text: "Sum",
     value: "SUM",
-    description: "Sum of weights across all points in a cell",
   },
 ];
 
@@ -21,31 +19,26 @@ const aggregationMethodsScreenGrid = [
     key: "mean",
     text: "Mean",
     value: "MEAN",
-    description: "Mean weight across all points in a cell",
   },
   {
     key: "sum",
     text: "Sum",
     value: "SUM",
-    description: "Sum of weights across all points in a cell",
   },
   {
     key: "min",
     text: "Min",
     value: "MIN",
-    description: "Minimum weight across all points in a cell",
   },
   {
     key: "max",
     text: "Max",
     value: "MAX",
-    description: "Maximum weight across all points in a cell",
   },
   {
     key: "count",
     text: "Count",
     value: "COUNT",
-    description: "Number of points in a cell",
   },
 ];
 
@@ -95,7 +88,6 @@ export const TopBarMenu = ({
       <Menu.Item disabled={disableItems}>
         <span style={{ marginRight: 10 }}>Aggregation Method:</span>
         <Dropdown
-          style={{ width: 350 }}
           disabled={disableItems}
           value={aggregation}
           selection
@@ -127,14 +119,17 @@ export const TopBarMenu = ({
           }}
         />
       </Menu.Item>
-      <Menu.Menu position="right">
-        <Menu.Item>
-          <span>
-            Find the project on GitHub{" "}
-            <a href="https://github.com/ckanz/deck-gl-lnd-pollution">here</a>.
-          </span>
-        </Menu.Item>
-      </Menu.Menu>
+      <div style={{ textAlign: 'right', width: '100%', marginRight: '10px', marginTop: '10px', minWidth: '200px'
+      }}>
+        <div>
+          Visualisation of the <a href="https://data.london.gov.uk/dataset/london-atmospheric-emissions-inventory--laei--2016/">London Atmospheric Emissions Inventory (LAEI)
+          2016</a>.
+        </div>
+        <div>
+          Find the project on GitHub{" "}
+          <a href="https://github.com/ckanz/deck-gl-lnd-pollution">here</a>.
+        </div>
+      </div>
     </Menu>
   );
 };
