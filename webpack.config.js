@@ -8,7 +8,8 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].js',
-    library: 'App'
+    library: 'App',
+    clean: true
   },
   devServer: {
     static: './src',

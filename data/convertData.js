@@ -2,7 +2,6 @@ const OsGridRef = require('mt-osgridref')
 const parse = require('csv-parse')
 const fs = require('fs')
 
-const aggregatedMap = new Map()
 const GRID_PRECISION = 2
 const OFFSET = 0.001
 
@@ -14,10 +13,12 @@ const files = [
   'LAEI2016_2016_PM25.csv',
 ]
 
-const EXPECTED_ROWS = 3e7
-let rowCount = 0
+const EXPECTED_ROWS = 6e6
 
 const processFile = fileName => {
+  const aggregatedMap = new Map()
+  let rowCount = 0
+  
   fs.createReadStream(`./data/CSV/${fileName}`)
     .on('error', console.error)
     .pipe(parse({ delimiter: ',', from: 2 }))
