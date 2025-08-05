@@ -7,7 +7,7 @@ A interactive web application that visualizes air pollution in London using deck
 The pollution data comes from the [London Atmospheric Emissions Inventory (LAEI) 2016](https://data.london.gov.uk/dataset/london-atmospheric-emissions-inventory--laei--2016/), provided by the Greater London Authority. This comprehensive dataset contains concentration measurements across London using the Ordnance Survey National Grid reference system.
 The raw data is processed by converting OS Grid References to latitude/longitude, aggregating nearby points, averaging concentration values, and converting the final data to CSV format. The OS Grid conversion is handled using the [`mt-osgridref`](https://github.com/peterhaldbaek/mt-osgridref) library by @peterhaldbaek. The original code was written by Chris Veness and can be found at http://www.movable-type.co.uk/scripts/latlong-gridref.html.
 
-The application is hosted on [https://ckanz.github.io/deck-gl-lnd-pollution/dist/](https://ckanz.github.io/deck-gl-lnd-pollution/dist/).
+The application is hosted on [https://ckanz.github.io/London-Pollution-with-DeckGL/dist](https://ckanz.github.io/London-Pollution-with-DeckGL/dist/) .
 
 ## Setup and Installation
 
